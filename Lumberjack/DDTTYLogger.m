@@ -866,6 +866,7 @@ static DDTTYLogger *sharedInstance;
 {
 	[self setForegroundColor:MakeColor(214,  57,  30) backgroundColor:nil forFlag:LOG_FLAG_ERROR];
 	[self setForegroundColor:MakeColor(204, 121,  32) backgroundColor:nil forFlag:LOG_FLAG_WARN];
+    [self setForegroundColor:MakeColor(0, 128, 0) backgroundColor:nil forFlag:LOG_FLAG_INFO];
 }
 
 - (BOOL)colorsEnabled
