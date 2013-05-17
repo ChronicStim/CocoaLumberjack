@@ -76,7 +76,9 @@
 		if (shortLabel)
 			[_replacements setObject:shortLabel forKey:longLabel];
 		else
-			[_replacements removeObjectForKey:longLabel];
+            if (nil != longLabel) {
+                [_replacements removeObjectForKey:longLabel];
+            }
 	}
 	OSSpinLockUnlock(&lock);
 }

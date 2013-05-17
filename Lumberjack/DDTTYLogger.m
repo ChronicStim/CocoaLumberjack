@@ -1059,7 +1059,9 @@ static DDTTYLogger *sharedInstance;
 	
 	dispatch_block_t block = ^{ @autoreleasepool {
 		
-		[colorProfilesDict removeObjectForKey:tag];
+        if (nil != tag) {
+            [colorProfilesDict removeObjectForKey:tag];
+        }
 	}};
 	
 	// The design of the setter logic below is taken from the DDAbstractLogger implementation.
