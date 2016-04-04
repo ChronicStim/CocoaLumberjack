@@ -830,6 +830,8 @@ static DDTTYLogger *sharedInstance;
             calendarUnitFlags |= NSCalendarUnitMinute;
             calendarUnitFlags |= NSCalendarUnitSecond;
         } else {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
             calendarUnitFlags = 0;
             calendarUnitFlags |= NSYearCalendarUnit;
             calendarUnitFlags |= NSMonthCalendarUnit;
@@ -837,7 +839,8 @@ static DDTTYLogger *sharedInstance;
             calendarUnitFlags |= NSHourCalendarUnit;
             calendarUnitFlags |= NSMinuteCalendarUnit;
             calendarUnitFlags |= NSSecondCalendarUnit;
-        }        
+#pragma clang diagnostic pop
+        }
 
 		// Initialze 'app' variable (char *)
 		
