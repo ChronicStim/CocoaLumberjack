@@ -821,26 +821,13 @@ static DDTTYLogger *sharedInstance;
 	{
 		calendar = [NSCalendar autoupdatingCurrentCalendar];
 		
-        if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
-            calendarUnitFlags = 0;
-            calendarUnitFlags |= NSCalendarUnitYear;
-            calendarUnitFlags |= NSCalendarUnitMonth;
-            calendarUnitFlags |= NSCalendarUnitDay;
-            calendarUnitFlags |= NSCalendarUnitHour;
-            calendarUnitFlags |= NSCalendarUnitMinute;
-            calendarUnitFlags |= NSCalendarUnitSecond;
-        } else {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            calendarUnitFlags = 0;
-            calendarUnitFlags |= NSYearCalendarUnit;
-            calendarUnitFlags |= NSMonthCalendarUnit;
-            calendarUnitFlags |= NSDayCalendarUnit;
-            calendarUnitFlags |= NSHourCalendarUnit;
-            calendarUnitFlags |= NSMinuteCalendarUnit;
-            calendarUnitFlags |= NSSecondCalendarUnit;
-#pragma clang diagnostic pop
-        }
+        calendarUnitFlags = 0;
+        calendarUnitFlags |= NSCalendarUnitYear;
+        calendarUnitFlags |= NSCalendarUnitMonth;
+        calendarUnitFlags |= NSCalendarUnitDay;
+        calendarUnitFlags |= NSCalendarUnitHour;
+        calendarUnitFlags |= NSCalendarUnitMinute;
+        calendarUnitFlags |= NSCalendarUnitSecond;
 
 		// Initialze 'app' variable (char *)
 		
