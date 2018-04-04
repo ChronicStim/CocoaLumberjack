@@ -525,7 +525,7 @@
 	__block unsigned long long result;
 	
 	dispatch_block_t block = ^{
-		result = maximumFileSize;
+        result = self->maximumFileSize;
 	};
 	
 	// The design of this method is taken from the DDAbstractLogger implementation.
@@ -544,7 +544,7 @@
 	dispatch_queue_t globalLoggingQueue = [DDLog loggingQueue];
 	
 	dispatch_sync(globalLoggingQueue, ^{
-		dispatch_sync(loggerQueue, block);
+        dispatch_sync(self->loggerQueue, block);
 	});
 	
 	return result;
@@ -554,7 +554,7 @@
 {
 	dispatch_block_t block = ^{ @autoreleasepool {
 		
-		maximumFileSize = newMaximumFileSize;
+        self->maximumFileSize = newMaximumFileSize;
 		[self maybeRollLogFileDueToSize];
 		
 	}};
@@ -575,7 +575,7 @@
 	dispatch_queue_t globalLoggingQueue = [DDLog loggingQueue];
 	
 	dispatch_async(globalLoggingQueue, ^{
-		dispatch_async(loggerQueue, block);
+        dispatch_async(self->loggerQueue, block);
 	});
 }
 
@@ -584,7 +584,7 @@
 	__block NSTimeInterval result;
 	
 	dispatch_block_t block = ^{
-		result = rollingFrequency;
+        result = self->rollingFrequency;
 	};
 	
 	// The design of this method is taken from the DDAbstractLogger implementation.
@@ -603,7 +603,7 @@
 	dispatch_queue_t globalLoggingQueue = [DDLog loggingQueue];
 	
 	dispatch_sync(globalLoggingQueue, ^{
-		dispatch_sync(loggerQueue, block);
+        dispatch_sync(self->loggerQueue, block);
 	});
 	
 	return result;
@@ -613,7 +613,7 @@
 {
 	dispatch_block_t block = ^{ @autoreleasepool {
 		
-		rollingFrequency = newRollingFrequency;
+        self->rollingFrequency = newRollingFrequency;
 		[self maybeRollLogFileDueToAge];
 	}};
 	
@@ -633,7 +633,7 @@
 	dispatch_queue_t globalLoggingQueue = [DDLog loggingQueue];
 	
 	dispatch_async(globalLoggingQueue, ^{
-		dispatch_async(loggerQueue, block);
+        dispatch_async(self->loggerQueue, block);
 	});
 }
 
@@ -681,7 +681,7 @@
 	});
 	#endif
 	
-	uint64_t delay = [logFileRollingDate timeIntervalSinceNow] * NSEC_PER_SEC;
+	uint64_t delay = (uint64_t)([logFileRollingDate timeIntervalSinceNow] * (NSTimeInterval)NSEC_PER_SEC);
 	dispatch_time_t fireTime = dispatch_time(DISPATCH_TIME_NOW, delay);
 	
 	dispatch_source_set_timer(rollingTimer, fireTime, DISPATCH_TIME_FOREVER, 1.0);
@@ -711,7 +711,7 @@
 		NSAssert(![self isOnGlobalLoggingQueue], @"Core architecture requirement failure");
 		
 		dispatch_async(globalLoggingQueue, ^{
-			dispatch_async(loggerQueue, block);
+            dispatch_async(self->loggerQueue, block);
 		});
 	}
 }
@@ -983,46 +983,10 @@
 
 - (NSDate *)creationDate
 {
-	if (creationDate == nil)
-	{
-	
-	#if TARGET_OS_IPHONE
-	
-		const char *path = [filePath UTF8String];
-		
-		struct attrlist attrList;
-		memset(&attrList, 0, sizeof(attrList));
-		attrList.bitmapcount = ATTR_BIT_MAP_COUNT;
-		attrList.commonattr = ATTR_CMN_CRTIME;
-		
-		struct {
-			u_int32_t attrBufferSizeInBytes;
-			struct timespec crtime;
-		} attrBuffer;
-		
-		int result = getattrlist(path, &attrList, &attrBuffer, sizeof(attrBuffer), 0);
-		if (result == 0)
-		{
-			double seconds = (double)(attrBuffer.crtime.tv_sec);
-			double nanos   = (double)(attrBuffer.crtime.tv_nsec);
-			
-			NSTimeInterval ti = seconds + (nanos / 1000000000.0);
-			
-			creationDate = [NSDate dateWithTimeIntervalSince1970:ti];
-		}
-		else
-		{
-			NSLogError(@"DDLogFileInfo: creationDate(%@): getattrlist result = %i", self.fileName, result);
-		}
-		
-	#else
-		
-		creationDate = [[self fileAttributes] objectForKey:NSFileCreationDate];
-		
-	#endif
-		
-	}
-	return creationDate;
+    if (creationDate == nil) {
+        creationDate = self.fileAttributes[NSFileCreationDate];
+    }
+    return creationDate;
 }
 
 - (unsigned long long)fileSize
